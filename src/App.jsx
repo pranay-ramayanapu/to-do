@@ -1,35 +1,64 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import "./style.css";
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [items, setItems] = useState([]);
+  const [newItem, setNewItem] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setItems([
+      ...items,
+      { id: crypto.randomUUID(), title: newItem, completed: false },
+    ]);
+  };
+
+  const handleCheck = (id ) => {
+    setItems((currentItems) =>
+      currentItems.map((item) =>
+        item.id === id ? { ...item, completed: !item.completed } : item,
+      ),
+    );
+  };
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+      <form className="new-item-form" onSubmit={handleSubmit}>
+        <div className="form-row">
+          <label htmlFor="item">New Item</label>
+          <input
+            type="text"
+            value={newItem}
+            onChange={(e) => setNewItem(e.target.value)}
+            id="item"
+          />
+        </div>
+        <button className="btn" type="submit">
+          Add
         </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      </form>
+      <h1 className="header">ToDo List</h1>
+      <ul className="list">
+        {items.map((item) => {
+          return (
+            <li key={item.id}>
+              <label>
+                <input
+                  type="checkbox"
+                  onChange={ ()=> {
+                    handleCheck(item.id);
+                  }}
+                  checked={item.completed}
+                />
+                {item.title}
+              </label>
+              <button type="submit" className="btn btn-danger">
+                Delete
+              </button>
+            </li>
+          );
+        })}
+      </ul>
     </>
-  )
+  );
 }
-
-export default App
